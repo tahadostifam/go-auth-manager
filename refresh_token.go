@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"strings"
 	"time"
 )
 
@@ -27,19 +28,19 @@ func refreshTokenKey(uuid string) string {
 // The GenerateToken method generates a random string with base64 with a static byte length
 // and stores it in the Redis store with provided expiration duration.
 func (t *authManager) GenerateRefreshToken(ctx context.Context, uuid string, payload *RefreshTokenPayload, expr time.Duration) (string, error) {
-	var raw []refreshTokenRaw
+	var list []refreshTokenRaw
 	key := refreshTokenKey(uuid)
 
 	cmd := t.redisClient.Get(ctx, key)
 	if cmd.Err() != nil {
 		// This is first time user logs in and we need to
-		// create a raw for user...
-		raw = []refreshTokenRaw{}
+		// create a refresh token list for user...
+		list = []refreshTokenRaw{}
 	}
 
-	err := json.Unmarshal([]byte(cmd.Val()), &raw)
+	err := json.Unmarshal([]byte(cmd.Val()), &list)
 	if err != nil {
-		raw = []refreshTokenRaw{}
+		list = []refreshTokenRaw{}
 	}
 
 	// Generate random string
@@ -48,12 +49,12 @@ func (t *authManager) GenerateRefreshToken(ctx context.Context, uuid string, pay
 		return "", err
 	}
 
-	raw = append(raw, refreshTokenRaw{
+	list = append(list, refreshTokenRaw{
 		RefreshToken: refreshToken,
 		Payload:      *payload,
 	})
 
-	jsonRaw, err := json.Marshal(raw)
+	jsonRaw, err := json.Marshal(list)
 	if err != nil {
 		return "", err
 	}
@@ -66,6 +67,81 @@ func (t *authManager) GenerateRefreshToken(ctx context.Context, uuid string, pay
 	return refreshToken, nil
 }
 
-func (t *authManager) DecodeRefreshToken(ctx context.Context, uuid string, payload *RefreshTokenPayload, expr time.Duration) (string, error) {
-	return "", nil
+func (t *authManager) DecodeRefreshToken(ctx context.Context, uuid string, token string) (*RefreshTokenPayload, error) {
+	var list []refreshTokenRaw
+	key := refreshTokenKey(uuid)
+
+	cmd := t.redisClient.Get(ctx, key)
+	if cmd.Err() != nil {
+		// This is first time user logs in and we need to
+		// create a list for user...
+		list = []refreshTokenRaw{}
+	}
+
+	err := json.Unmarshal([]byte(cmd.Val()), &list)
+	if err != nil {
+		list = []refreshTokenRaw{}
+	}
+
+	var raw *refreshTokenRaw
+
+	for _, v := range list {
+		if strings.TrimSpace(v.RefreshToken) == strings.TrimSpace(token) {
+			raw = &v
+		}
+	}
+
+	if raw == nil {
+		return nil, ErrInvalidToken
+	}
+
+	return &raw.Payload, nil
+}
+
+func (t *authManager) TerminateRefreshTokens(ctx context.Context, uuid string) error {
+	return t.DestroyToken(ctx, refreshTokenKey(uuid))
+}
+
+func (t *authManager) RemoveRefreshToken(ctx context.Context, uuid string, token string) error {
+	var list []refreshTokenRaw
+	key := refreshTokenKey(uuid)
+
+	cmd := t.redisClient.Get(ctx, key)
+	if cmd.Err() != nil {
+		// This is first time user logs in and we need to
+		// create a refresh token list for user...
+		list = []refreshTokenRaw{}
+	}
+
+	err := json.Unmarshal([]byte(cmd.Val()), &list)
+	if err != nil {
+		list = []refreshTokenRaw{}
+	}
+
+	rawIndex := -1
+
+	for i, v := range list {
+		if strings.TrimSpace(v.RefreshToken) == strings.TrimSpace(token) {
+			rawIndex = i
+		}
+	}
+
+	if rawIndex == -1 {
+		return ErrInvalidToken
+	}
+
+	// Remove raw from list
+	list = append(list[:rawIndex], list[rawIndex+1:]...)
+
+	jsonRaw, err := json.Marshal(list)
+	if err != nil {
+		return err
+	}
+
+	err = t.redisClient.GetSet(ctx, key, jsonRaw).Err()
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

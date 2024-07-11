@@ -7,13 +7,20 @@ import (
 	"github.com/golang-jwt/jwt/v4"
 )
 
+type AccessTokenClaims struct {
+	Payload TokenPayload
+	jwt.StandardClaims
+}
+
 // The GenerateAccessToken method is used to generate Stateless JWT Token.
 // Notice that access tokens are not store at Redis Store and they are stateless!
 func (t *authManager) GenerateAccessToken(ctx context.Context, uuid string, expr time.Duration) (string, error) {
-	claims := TokenClaims{
-		UUID:      uuid,
-		TokenType: AccessToken,
-		CreatedAt: time.Now(),
+	claims := AccessTokenClaims{
+		Payload: TokenPayload{
+			UUID:      uuid,
+			TokenType: AccessToken,
+			CreatedAt: time.Now(),
+		},
 	}
 	jwtToken, err := jwt.NewWithClaims(TokenEncodingAlgorithm, claims).SignedString([]byte(t.opts.PrivateKey))
 	if err != nil {
@@ -25,8 +32,8 @@ func (t *authManager) GenerateAccessToken(ctx context.Context, uuid string, expr
 
 // The GenerateAccessToken method is used to generate Stateless JWT Token.
 // Notice that access tokens are not store at Redis Store and they are stateless!
-func (t *authManager) DecodeAccessToken(ctx context.Context, token string) (bool, error) {
-	claims := &TokenClaims{}
+func (t *authManager) DecodeAccessToken(ctx context.Context, token string) (*AccessTokenClaims, error) {
+	claims := &AccessTokenClaims{}
 	jwtToken, err := jwt.ParseWithClaims(token, claims,
 		func(token *jwt.Token) (interface{}, error) {
 			if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
@@ -37,16 +44,16 @@ func (t *authManager) DecodeAccessToken(ctx context.Context, token string) (bool
 		},
 	)
 	if err != nil {
-		return false, ErrInvalidToken
+		return nil, ErrInvalidToken
 	}
 
 	if jwtToken.Valid {
-		if claims.TokenType != AccessToken {
-			return false, ErrInvalidTokenType
+		if claims.Payload.TokenType != AccessToken {
+			return nil, ErrInvalidTokenType
 		}
 
-		return true, nil
+		return claims, nil
 	}
 
-	return false, ErrInvalidToken
+	return nil, ErrInvalidToken
 }

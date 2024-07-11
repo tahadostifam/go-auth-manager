@@ -2,6 +2,7 @@ package auth_manager
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"time"
 
@@ -31,9 +32,13 @@ const (
 
 type AuthManager interface {
 	GenerateAccessToken(ctx context.Context, uuid string, expr time.Duration) (string, error)
-	DecodeAccessToken(ctx context.Context, token string) (bool, error)
-	GenerateToken(ctx context.Context, tokenType TokenType, tokenClaims *TokenClaims, expr time.Duration) (_ string, _ error)
-	DecodeToken(ctx context.Context, token string, tokenType TokenType) (*TokenClaims, error)
+	DecodeAccessToken(ctx context.Context, token string) (*AccessTokenClaims, error)
+	GenerateRefreshToken(ctx context.Context, uuid string, payload *RefreshTokenPayload, expr time.Duration) (string, error)
+	TerminateRefreshTokens(ctx context.Context, uuid string) error
+	RemoveRefreshToken(ctx context.Context, uuid string, token string) error
+	DecodeRefreshToken(ctx context.Context, uuid string, token string) (*RefreshTokenPayload, error)
+	GenerateToken(ctx context.Context, tokenType TokenType, payload *TokenPayload, expr time.Duration) (string, error)
+	DecodeToken(ctx context.Context, token string, tokenType TokenType) (*TokenPayload, error)
 	DestroyToken(ctx context.Context, key string) error
 }
 
@@ -42,19 +47,10 @@ type AuthManagerOpts struct {
 }
 
 // Used as jwt claims
-type TokenClaims struct {
+type TokenPayload struct {
 	UUID      string    `json:"uuid"`
 	CreatedAt time.Time `json:"createdAt"`
 	TokenType TokenType `json:"tokenType"`
-	jwt.StandardClaims
-}
-
-func NewTokenClaims(uuid string, tokenType TokenType) *TokenClaims {
-	return &TokenClaims{
-		UUID:      uuid,
-		CreatedAt: time.Now(),
-		TokenType: tokenType,
-	}
 }
 
 type authManager struct {
@@ -72,13 +68,18 @@ func NewAuthManager(redisClient *redis.Client, opts AuthManagerOpts) AuthManager
 // Never use this method generate access or refresh token!
 // There are other methods to achieve this goal.
 // Use this method for example for [ResetPassword, VerifyEmail] tokens...
-func (t *authManager) GenerateToken(ctx context.Context, tokenType TokenType, tokenClaims *TokenClaims, expr time.Duration) (string, error) {
+func (t *authManager) GenerateToken(ctx context.Context, tokenType TokenType, payload *TokenPayload, expr time.Duration) (string, error) {
 	token, err := generateRandomString(TokenByteLength)
 	if err != nil {
 		return "", err
 	}
 
-	cmd := t.redisClient.Set(ctx, token, tokenClaims, expr)
+	claimsJson, err := json.Marshal(&payload)
+	if err != nil {
+		return "", err
+	}
+
+	cmd := t.redisClient.Set(ctx, token, claimsJson, expr)
 	if cmd.Err() != nil {
 		return "", cmd.Err()
 	}
@@ -92,35 +93,20 @@ func (t *authManager) GenerateToken(ctx context.Context, tokenType TokenType, to
 // Token type is required for validation!
 //
 // Never use this method for access and refresh token, they have their own decode methods!
-func (t *authManager) DecodeToken(ctx context.Context, token string, tokenType TokenType) (*TokenClaims, error) {
-	_, err := t.redisClient.Get(ctx, token).Result()
+func (t *authManager) DecodeToken(ctx context.Context, token string, tokenType TokenType) (*TokenPayload, error) {
+	claimsString, err := t.redisClient.Get(ctx, token).Result()
 	if err != nil {
 		return nil, err
 	}
 
-	tokenClaims := &TokenClaims{}
-	jwtToken, err := jwt.ParseWithClaims(token, tokenClaims,
-		func(token *jwt.Token) (interface{}, error) {
-			if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-				return nil, ErrUnexpectedSigningMethod
-			}
+	claims := &TokenPayload{}
 
-			return []byte(t.opts.PrivateKey), nil
-		},
-	)
+	err = json.Unmarshal([]byte(claimsString), &claims)
 	if err != nil {
 		return nil, ErrInvalidToken
 	}
 
-	if jwtToken.Valid {
-		if tokenClaims.TokenType != tokenType {
-			return nil, ErrInvalidTokenType
-		}
-
-		return tokenClaims, nil
-	}
-
-	return &TokenClaims{}, ErrInvalidToken
+	return claims, nil
 }
 
 // The Destroy method is simply used to remove a key from Redis Store.
