@@ -1,4 +1,4 @@
-module go-auth-manager
+module github.com/tahadostifam/go-auth-manager
 
 go 1.22.4
 

@@ -3,11 +3,12 @@ package auth_manager_test
 import (
 	"context"
 	"fmt"
-	auth_manager "go-auth-manager"
 	"log"
 	"os"
 	"testing"
 	"time"
+
+	auth_manager "github.com/tahadostifam/go-auth-manager"
 
 	"github.com/go-redis/redis/v8"
 	"github.com/google/uuid"
