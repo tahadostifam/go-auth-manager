@@ -2,24 +2,33 @@ package auth_manager
 
 import (
 	"context"
+	"log"
 	"time"
 
-	"github.com/golang-jwt/jwt/v4"
+	"github.com/golang-jwt/jwt/v5"
 )
+
+var TokenEncodingAlgorithm = jwt.SigningMethodHS512
 
 type AccessTokenClaims struct {
 	Payload TokenPayload
-	jwt.StandardClaims
+	jwt.RegisteredClaims
 }
 
 // The GenerateAccessToken method is used to generate Stateless JWT Token.
 // Notice that access tokens are not store at Redis Store and they are stateless!
-func (t *authManager) GenerateAccessToken(ctx context.Context, uuid string, expr time.Duration) (string, error) {
+func (t *authManager) GenerateAccessToken(ctx context.Context, uuid string, expiresAt time.Duration) (string, error) {
+	now := time.Now()
+
 	claims := AccessTokenClaims{
 		Payload: TokenPayload{
 			UUID:      uuid,
 			TokenType: AccessToken,
 			CreatedAt: time.Now(),
+		},
+		RegisteredClaims: jwt.RegisteredClaims{
+			ExpiresAt: jwt.NewNumericDate(now.Add(expiresAt)),
+			Issuer:    "go-auth-manager",
 		},
 	}
 	jwtToken, err := jwt.NewWithClaims(TokenEncodingAlgorithm, claims).SignedString([]byte(t.opts.PrivateKey))
@@ -44,6 +53,7 @@ func (t *authManager) DecodeAccessToken(ctx context.Context, token string) (*Acc
 		},
 	)
 	if err != nil {
+		log.Println("error: ", err)
 		return nil, ErrInvalidToken
 	}
 

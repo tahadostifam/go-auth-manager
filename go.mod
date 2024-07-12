@@ -21,6 +21,7 @@ require (
 	github.com/go-redis/redismock/v8 v8.11.5 // indirect
 	github.com/go-redis/redismock/v9 v9.2.0 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
+	github.com/golang-jwt/jwt/v5 v5.2.1 // indirect
 	github.com/google/shlex v0.0.0-20191202100458-e7afc7fbc510 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/imdario/mergo v0.3.12 // indirect

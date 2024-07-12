@@ -117,11 +117,13 @@ func (s *AuthManagerTestSuite) Test_GenerateAndDecodeAccessToken() {
 	// Generate
 	ctx := context.TODO()
 	uuid := uuid.NewString()
-	expiration := time.Minute * 2
+	expiration := time.Minute * 10
 
 	token, err := s.authManager.GenerateAccessToken(ctx, uuid, expiration)
 	require.NoError(s.T(), err)
 	require.NotEmpty(s.T(), token)
+
+	s.T().Log(token)
 
 	// Decode
 	decoded, err := s.authManager.DecodeAccessToken(ctx, token)

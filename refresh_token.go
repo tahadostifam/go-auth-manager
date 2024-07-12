@@ -27,7 +27,7 @@ func refreshTokenKey(uuid string) string {
 
 // The GenerateToken method generates a random string with base64 with a static byte length
 // and stores it in the Redis store with provided expiration duration.
-func (t *authManager) GenerateRefreshToken(ctx context.Context, uuid string, payload *RefreshTokenPayload, expr time.Duration) (string, error) {
+func (t *authManager) GenerateRefreshToken(ctx context.Context, uuid string, payload *RefreshTokenPayload, expiresAt time.Duration) (string, error) {
 	var list []refreshTokenRaw
 	key := refreshTokenKey(uuid)
 
@@ -59,7 +59,7 @@ func (t *authManager) GenerateRefreshToken(ctx context.Context, uuid string, pay
 		return "", err
 	}
 
-	err = t.redisClient.Set(ctx, key, jsonRaw, expr).Err()
+	err = t.redisClient.Set(ctx, key, jsonRaw, expiresAt).Err()
 	if err != nil {
 		return "", err
 	}

@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"github.com/go-redis/redis/v8"
-	"github.com/golang-jwt/jwt/v4"
 )
 
 const TokenByteLength = 32
@@ -19,8 +18,6 @@ var (
 	ErrNotFound                = errors.New("not found")
 )
 
-var TokenEncodingAlgorithm = jwt.SigningMethodHS512
-
 type TokenType int
 
 const (
@@ -31,13 +28,13 @@ const (
 )
 
 type AuthManager interface {
-	GenerateAccessToken(ctx context.Context, uuid string, expr time.Duration) (string, error)
+	GenerateAccessToken(ctx context.Context, uuid string, expiresAt time.Duration) (string, error)
 	DecodeAccessToken(ctx context.Context, token string) (*AccessTokenClaims, error)
-	GenerateRefreshToken(ctx context.Context, uuid string, payload *RefreshTokenPayload, expr time.Duration) (string, error)
+	GenerateRefreshToken(ctx context.Context, uuid string, payload *RefreshTokenPayload, expiresAt time.Duration) (string, error)
 	TerminateRefreshTokens(ctx context.Context, uuid string) error
 	RemoveRefreshToken(ctx context.Context, uuid string, token string) error
 	DecodeRefreshToken(ctx context.Context, uuid string, token string) (*RefreshTokenPayload, error)
-	GenerateToken(ctx context.Context, tokenType TokenType, payload *TokenPayload, expr time.Duration) (string, error)
+	GenerateToken(ctx context.Context, tokenType TokenType, payload *TokenPayload, expiresAt time.Duration) (string, error)
 	DecodeToken(ctx context.Context, token string, tokenType TokenType) (*TokenPayload, error)
 	DestroyToken(ctx context.Context, key string) error
 }
@@ -68,7 +65,7 @@ func NewAuthManager(redisClient *redis.Client, opts AuthManagerOpts) AuthManager
 // Never use this method generate access or refresh token!
 // There are other methods to achieve this goal.
 // Use this method for example for [ResetPassword, VerifyEmail] tokens...
-func (t *authManager) GenerateToken(ctx context.Context, tokenType TokenType, payload *TokenPayload, expr time.Duration) (string, error) {
+func (t *authManager) GenerateToken(ctx context.Context, tokenType TokenType, payload *TokenPayload, expiresAt time.Duration) (string, error) {
 	token, err := generateRandomString(TokenByteLength)
 	if err != nil {
 		return "", err
@@ -79,7 +76,7 @@ func (t *authManager) GenerateToken(ctx context.Context, tokenType TokenType, pa
 		return "", err
 	}
 
-	cmd := t.redisClient.Set(ctx, token, claimsJson, expr)
+	cmd := t.redisClient.Set(ctx, token, claimsJson, expiresAt)
 	if cmd.Err() != nil {
 		return "", cmd.Err()
 	}
