@@ -2,7 +2,6 @@ package auth_manager
 
 import (
 	"context"
-	"log"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -53,12 +52,11 @@ func (t *authManager) DecodeAccessToken(ctx context.Context, token string) (*Acc
 		},
 	)
 	if err != nil {
-		log.Println("error: ", err)
 		return nil, ErrInvalidToken
 	}
 
 	expr, err := jwtToken.Claims.GetExpirationTime()
-	if err != nil {
+	if err != nil || expr == nil {
 		return nil, ErrNoExpiration
 	}
 	now := time.Now()
