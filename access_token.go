@@ -57,6 +57,16 @@ func (t *authManager) DecodeAccessToken(ctx context.Context, token string) (*Acc
 		return nil, ErrInvalidToken
 	}
 
+	expr, err := jwtToken.Claims.GetExpirationTime()
+	if err != nil {
+		return nil, ErrNoExpiration
+	}
+	now := time.Now()
+
+	if expr.Time.Before(now) {
+		return nil, ErrTokenExpired
+	}
+
 	if jwtToken.Valid {
 		if claims.Payload.TokenType != AccessToken {
 			return nil, ErrInvalidTokenType

@@ -16,6 +16,8 @@ var (
 	ErrInvalidTokenType        = errors.New("invalid token type")
 	ErrUnexpectedSigningMethod = errors.New("unexpected token signing method")
 	ErrNotFound                = errors.New("not found")
+	ErrNoExpiration            = errors.New("no expiration set for the token")
+	ErrTokenExpired            = errors.New("token expired")
 )
 
 type TokenType int
