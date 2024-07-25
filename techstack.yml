@@ -1,0 +1,400 @@
+repo_name: tahadostifam/go-auth-manager
+report_id: e22cff9cde70842ab92972845d6dee6e
+version: 0.1
+repo_type: Public
+timestamp: '2024-07-25T21:38:29+00:00'
+requested_by: tahadostifam
+provider: github
+branch: main
+detected_tools_count: 28
+tools:
+- name: Golang
+  description: An open source programming language that makes it easy to build simple,
+    reliable, and efficient software
+  website_url: http://golang.org/
+  license: BSD-3-Clause
+  open_source: true
+  hosted_saas: false
+  category: Languages & Frameworks
+  sub_category: Languages
+  image_url: https://img.stackshare.io/service/1005/O6AczwfV_400x400.png
+  detection_source_url: https://github.com/tahadostifam/go-auth-manager
+  detection_source: Repo Metadata
+- name: Protobuf
+  description: Google's data interchange format
+  website_url: https://developers.google.com/protocol-buffers/
+  open_source: true
+  hosted_saas: false
+  category: Languages & Frameworks
+  sub_category: Serialization Frameworks
+  image_url: https://img.stackshare.io/service/4393/ma2jqJKH_400x400.png
+  detection_source_url: https://github.com/tahadostifam/go-auth-manager/blob/main/go.mod
+  detection_source: go.mod
+  last_updated_by: Taha Dostifam
+  last_updated_on: 2024-07-11 13:33:37.000000000 Z
+- name: Docker
+  description: Enterprise Container Platform for High-Velocity Innovation.
+  website_url: https://www.docker.com/
+  license: Apache-2.0
+  open_source: true
+  hosted_saas: false
+  category: Build, Test, Deploy
+  sub_category: Virtual Machine Platforms & Containers
+  image_url: https://img.stackshare.io/service/586/n4u37v9t_400x400.png
+  detection_source_url: https://github.com/tahadostifam/go-auth-manager/blob/main/go.mod
+  detection_source: go.mod
+  last_updated_by: Taha Dostifam
+  last_updated_on: 2024-07-11 13:33:37.000000000 Z
+- name: Git
+  description: Fast, scalable, distributed revision control system
+  website_url: http://git-scm.com/
+  open_source: true
+  hosted_saas: false
+  category: Build, Test, Deploy
+  sub_category: Version Control System
+  image_url: https://img.stackshare.io/service/1046/git.png
+  detection_source_url: https://github.com/tahadostifam/go-auth-manager
+  detection_source: Repo Metadata
+- name: GoTTY
+  description: Share your terminal as a web application
+  website_url: https://github.com/yudai/gotty
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Build, Test, Deploy
+  sub_category: localhost Tools
+  image_url: https://img.stackshare.io/no-img-open-source.png
+  detection_source_url: https://github.com/tahadostifam/go-auth-manager/blob/main/go.mod
+  detection_source: go.mod
+  last_updated_by: Taha Dostifam
+  last_updated_on: 2024-07-11 01:07:55.000000000 Z
+- name: Testify
+  description: A toolkit with common assertions and mocks that plays nicely with the
+    standard library
+  website_url: https://github.com/stretchr/testify
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Build, Test, Deploy
+  sub_category: Go Testing
+  image_url: https://img.stackshare.io/service/8695/stretchr.png
+  detection_source_url: https://github.com/tahadostifam/go-auth-manager/blob/main/go.mod
+  detection_source: go.mod
+  last_updated_by: Taha Dostifam
+  last_updated_on: 2024-07-11 14:05:56.000000000 Z
+- name: yaml.v2
+  description: YAML support for the Go language
+  package_url: https://pkg.go.dev/gopkg.in/yaml.v2
+  version: 2.2.2
+  license: LGPL-3.0
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/tahadostifam/go-auth-manager/blob/main/go.sum
+  detection_source: go.mod
+  last_updated_by: Taha Dostifam
+  last_updated_on: 2024-07-11 13:33:37.000000000 Z
+  vulnerabilities:
+  - name: Excessive Platform Resource Consumption within a Loop in Kubernetes
+    cve_id: CVE-2019-11254
+    cve_url: https://github.com/advisories/GHSA-wxc4-f4m6-wwqv
+    detected_date: Jan 28
+    severity: moderate
+    first_patched: 2.2.8
+- name: continuity
+  description: A transport-agnostic, filesystem metadata manifest system
+  package_url: https://pkg.go.dev/github.com/containerd/continuity
+  version: 0.3.0
+  license: Apache-2.0
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/tahadostifam/go-auth-manager/blob/main/go.sum
+  detection_source: go.mod
+  last_updated_by: Taha Dostifam
+  last_updated_on: 2024-07-11 13:33:37.000000000 Z
+- name: errors
+  description: Simple error handling primitives
+  package_url: https://pkg.go.dev/github.com/pkg/errors
+  version: 0.8.1
+  license: BSD-2-Clause
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/tahadostifam/go-auth-manager/blob/main/go.sum
+  detection_source: go.mod
+  last_updated_by: Taha Dostifam
+  last_updated_on: 2024-07-11 13:33:37.000000000 Z
+- name: go-ansiterm
+  description: Go package for ANSI terminal emulation in Windows
+  package_url: https://pkg.go.dev/github.com/Azure/go-ansiterm
+  version: 0.0.0
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/tahadostifam/go-auth-manager/blob/main/go.sum
+  detection_source: go.mod
+  last_updated_by: Taha Dostifam
+  last_updated_on: 2024-07-11 14:05:56.000000000 Z
+- name: go-connections
+  description: Utility package to work with network connections
+  package_url: https://pkg.go.dev/github.com/docker/go-connections
+  version: 0.4.0
+  license: Apache-2.0
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/tahadostifam/go-auth-manager/blob/main/go.sum
+  detection_source: go.mod
+  last_updated_by: Taha Dostifam
+  last_updated_on: 2024-07-11 13:33:37.000000000 Z
+- name: go-difflib
+  description: Partial port of Python difflib package to Go
+  package_url: https://pkg.go.dev/github.com/pmezard/go-difflib
+  version: 1.0.0
+  license: BSD-3-Clause
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/tahadostifam/go-auth-manager/blob/main/go.sum
+  detection_source: go.mod
+  last_updated_by: Taha Dostifam
+  last_updated_on: 2024-07-11 13:33:37.000000000 Z
+- name: go-digest
+  description: Common digest package used across the container ecosystem
+  package_url: https://pkg.go.dev/github.com/opencontainers/go-digest
+  version: 1.0.0
+  license: Other
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/tahadostifam/go-auth-manager/blob/main/go.sum
+  detection_source: go.mod
+  last_updated_by: Taha Dostifam
+  last_updated_on: 2024-07-11 13:33:37.000000000 Z
+- name: go-spew
+  description: Implements a deep pretty printer for Go data structures to aid in debugging
+  package_url: https://pkg.go.dev/github.com/davecgh/go-spew
+  version: 1.1.0
+  license: ISC
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/tahadostifam/go-auth-manager/blob/main/go.sum
+  detection_source: go.mod
+  last_updated_by: Taha Dostifam
+  last_updated_on: 2024-07-11 13:33:37.000000000 Z
+- name: go-units
+  description: Parse and print size and time units in human-readable format
+  package_url: https://pkg.go.dev/github.com/docker/go-units
+  version: 0.4.0
+  license: Apache-2.0
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/tahadostifam/go-auth-manager/blob/main/go.sum
+  detection_source: go.mod
+  last_updated_by: Taha Dostifam
+  last_updated_on: 2024-07-11 13:33:37.000000000 Z
+- name: go-winio
+  description: Win32 IO-related utilities for Go
+  package_url: https://pkg.go.dev/github.com/Microsoft/go-winio
+  version: 0.6.0
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/tahadostifam/go-auth-manager/blob/main/go.sum
+  detection_source: go.mod
+  last_updated_by: Taha Dostifam
+  last_updated_on: 2024-07-11 13:33:37.000000000 Z
+- name: gogo/protobuf
+  description: Protocol Buffers for Go with Gadgets
+  package_url: https://pkg.go.dev/github.com/gogo/protobuf
+  version: 1.3.2
+  license: Other
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/tahadostifam/go-auth-manager/blob/main/go.sum
+  detection_source: go.mod
+  last_updated_by: Taha Dostifam
+  last_updated_on: 2024-07-11 13:33:37.000000000 Z
+- name: gojsonpointer
+  description: JSON Pointer implementation in Golang
+  package_url: https://pkg.go.dev/github.com/xeipuuv/gojsonpointer
+  version: 0.0.0
+  license: Apache-2.0
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/tahadostifam/go-auth-manager/blob/main/go.sum
+  detection_source: go.mod
+  last_updated_by: Taha Dostifam
+  last_updated_on: 2024-07-11 13:33:37.000000000 Z
+- name: gojsonreference
+  description: JSON Reference implementation in Golang
+  package_url: https://pkg.go.dev/github.com/xeipuuv/gojsonreference
+  version: 0.0.0
+  license: Apache-2.0
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/tahadostifam/go-auth-manager/blob/main/go.sum
+  detection_source: go.mod
+  last_updated_by: Taha Dostifam
+  last_updated_on: 2024-07-11 13:33:37.000000000 Z
+- name: gojsonschema
+  description: An implementation of JSON Schema
+  package_url: https://pkg.go.dev/github.com/xeipuuv/gojsonschema
+  version: 1.2.0
+  license: Apache-2.0
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/tahadostifam/go-auth-manager/blob/main/go.sum
+  detection_source: go.mod
+  last_updated_by: Taha Dostifam
+  last_updated_on: 2024-07-11 13:33:37.000000000 Z
+- name: google/uuid
+  description: 'Go package for UUIDs based on RFC 4122 and DCE 1.1: Authentication
+    and Security Services'
+  package_url: https://pkg.go.dev/github.com/google/uuid
+  version: 1.6.0
+  license: BSD-3-Clause
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/tahadostifam/go-auth-manager/blob/main/go.sum
+  detection_source: go.mod
+  last_updated_by: Taha Dostifam
+  last_updated_on: 2024-07-11 13:33:37.000000000 Z
+- name: logrus
+  description: Structured, pluggable logging for Go
+  package_url: https://pkg.go.dev/github.com/sirupsen/logrus
+  version: 1.8.1
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/tahadostifam/go-auth-manager/blob/main/go.sum
+  detection_source: go.mod
+  last_updated_by: Taha Dostifam
+  last_updated_on: 2024-07-11 13:33:37.000000000 Z
+- name: mapstructure
+  description: Go library for decoding generic map values into native Go structures
+  package_url: https://pkg.go.dev/github.com/mitchellh/mapstructure
+  version: 1.4.1
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/tahadostifam/go-auth-manager/blob/main/go.sum
+  detection_source: go.mod
+  last_updated_by: Taha Dostifam
+  last_updated_on: 2024-07-11 13:33:37.000000000 Z
+- name: mergo
+  description: 'Mergo: merging Go structs and maps since 2013'
+  package_url: https://pkg.go.dev/github.com/imdario/mergo
+  version: 0.3.12
+  license: BSD-3-Clause
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/tahadostifam/go-auth-manager/blob/main/go.sum
+  detection_source: go.mod
+  last_updated_by: Taha Dostifam
+  last_updated_on: 2024-07-11 13:33:37.000000000 Z
+- name: runc
+  description: CLI tool for spawning and running containers according to the OCI specification
+  package_url: https://pkg.go.dev/github.com/opencontainers/runc
+  version: 1.1.5
+  license: Apache-2.0
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/tahadostifam/go-auth-manager/blob/main/go.sum
+  detection_source: go.mod
+  last_updated_by: Taha Dostifam
+  last_updated_on: 2024-07-11 13:33:37.000000000 Z
+- name: shlex
+  description: Automatically exported from code.google.com/p/go-shlex
+  package_url: https://pkg.go.dev/github.com/google/shlex
+  version: 0.0.0
+  license: Apache-2.0
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/tahadostifam/go-auth-manager/blob/main/go.sum
+  detection_source: go.mod
+  last_updated_by: Taha Dostifam
+  last_updated_on: 2024-07-11 13:33:37.000000000 Z
+- name: sys
+  description: Go packages for low-level interaction with the operating system
+  package_url: https://pkg.go.dev/golang.org/x/sys
+  version: 0.0.0
+  license: BSD-3-Clause
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/tahadostifam/go-auth-manager/blob/main/go.sum
+  detection_source: go.mod
+  last_updated_by: Taha Dostifam
+  last_updated_on: 2024-07-11 01:07:55.000000000 Z
+- name: tools
+  description: Go Tools
+  package_url: https://pkg.go.dev/golang.org/x/tools
+  version: 0.0.0
+  license: BSD-3-Clause
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/tahadostifam/go-auth-manager/blob/main/go.sum
+  detection_source: go.mod
+  last_updated_by: Taha Dostifam
+  last_updated_on: 2024-07-11 13:33:37.000000000 Z
