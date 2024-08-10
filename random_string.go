@@ -5,11 +5,16 @@ import (
 	"encoding/base64"
 )
 
+var randomBytesPool = make([]byte, 1024)
+
 func generateRandomString(length int) (string, error) {
-	bytes := make([]byte, length)
-	if _, err := rand.Read(bytes); err != nil {
+	if length > len(randomBytesPool) {
+		randomBytesPool = make([]byte, length)
+	}
+
+	if _, err := rand.Read(randomBytesPool[:length]); err != nil {
 		return "", err
 	}
 
-	return base64.RawStdEncoding.EncodeToString(bytes), nil
+	return base64.RawStdEncoding.EncodeToString(randomBytesPool[:length]), nil
 }

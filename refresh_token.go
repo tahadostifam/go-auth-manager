@@ -22,7 +22,7 @@ type refreshTokenRaw struct {
 }
 
 func refreshTokenKey(uuid string) string {
-	return fmt.Sprintf("RefreshTokenRaw_%s", uuid)
+	return fmt.Sprintf("user:refresh_token:%s", uuid)
 }
 
 // The GenerateToken method generates a random string with base64 with a static byte length

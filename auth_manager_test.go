@@ -123,8 +123,6 @@ func (s *AuthManagerTestSuite) Test_GenerateAndDecodeAccessToken() {
 	require.NoError(s.T(), err)
 	require.NotEmpty(s.T(), token)
 
-	s.T().Log(token)
-
 	// Decode
 	decoded, err := s.authManager.DecodeAccessToken(ctx, token)
 	require.NoError(s.T(), err)
