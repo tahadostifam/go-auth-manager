@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"strconv"
 	"time"
 
 	"github.com/go-redis/redis/v8"
@@ -18,6 +19,7 @@ var (
 	ErrNotFound                = errors.New("not found")
 	ErrNoExpiration            = errors.New("no expiration set for the token")
 	ErrTokenExpired            = errors.New("token expired")
+	ErrCodeIsInValid = errors.New("code is invalid") 
 )
 
 type TokenType int
@@ -39,6 +41,8 @@ type AuthManager interface {
 	GenerateToken(ctx context.Context, tokenType TokenType, payload *TokenPayload, expiresAt time.Duration) (string, error)
 	DecodeToken(ctx context.Context, token string, tokenType TokenType) (*TokenPayload, error)
 	DestroyToken(ctx context.Context, key string) error
+	GenerateVerificationCode(ctx context.Context, key string, codeLengths int, expiresAt time.Duration)( string,error)
+	CompareVerificationCode(ctx context.Context, key, code string) (bool, error)
 }
 
 type AuthManagerOpts struct {
@@ -117,3 +121,30 @@ func (t *authManager) DestroyToken(ctx context.Context, key string) error {
 
 	return nil
 }
+
+// The GenerateVerificationCode method stores a verification code with expire time in Redis.
+func (t *authManager) GenerateVerificationCode(ctx context.Context, key string, codeLengths int, expiresAt time.Duration)( string,error ){
+	code := generateRandomNumber(codeLengths)
+
+	_, err := t.redisClient.Set(ctx, key, code, expiresAt).Result()
+	if err != nil {
+		return "",err
+	}
+
+	return strconv.Itoa(code),nil
+}
+
+// The CompareVerificationCode method compare input code with stored code in Redis.
+func (t *authManager) CompareVerificationCode(ctx context.Context, key, code string) (bool, error) {
+	storedCode , err := t.redisClient.Get(ctx,key).Result()
+	if err != nil{
+		return false,err
+	}
+
+	if storedCode != code {
+		return false,ErrCodeIsInValid
+	}  
+
+	return true,nil
+}
+

@@ -7,3 +7,9 @@ func BenchmarkGenerateRandomString(b *testing.B) {
 		generateRandomString(32)
 	}
 }
+
+func BenchmarkGenerateRandomNumber(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		generateRandomNumber(6)
+	}
+}

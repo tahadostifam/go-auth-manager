@@ -162,6 +162,21 @@ func (s *AuthManagerTestSuite) Test_RefreshToken() {
 	require.NoError(s.T(), err)
 }
 
+func (s *AuthManagerTestSuite) Test_GenerateAndCompareVerificationCode() {
+	// Generate
+	ctx := context.TODO()
+
+	uuid := uuid.NewString()
+
+	storedCode,generateCodeError := s.authManager.GenerateVerificationCode(ctx,uuid,6,2*time.Minute)
+	require.NoError(s.T(),generateCodeError)
+
+	//Compare
+
+	isValid,compareError := s.authManager.CompareVerificationCode(ctx,uuid,storedCode)
+	require.NoError(s.T(),compareError)
+	require.True(s.T(),isValid)
+}
 func TestAuthManagerTestSuite(t *testing.T) {
 	suite.Run(t, new(AuthManagerTestSuite))
 }
