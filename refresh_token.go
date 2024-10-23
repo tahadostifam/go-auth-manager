@@ -4,11 +4,14 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"strings"
 	"time"
 )
 
 const refreshTokenByteLength = 32
+
+func generateHashKey(uuid string) string {
+	return fmt.Sprintf("refresh_token:%s", uuid)
+}
 
 type RefreshTokenPayload struct {
 	IPAddress  string        `json:"ipAddress"`
@@ -16,50 +19,23 @@ type RefreshTokenPayload struct {
 	LoggedInAt time.Duration `json:"loggedInAt"`
 }
 
-type refreshTokenRaw struct {
-	RefreshToken string              `json:"refreshToken"`
-	Payload      RefreshTokenPayload `json:"payload"`
-}
-
-func refreshTokenKey(uuid string) string {
-	return fmt.Sprintf("user:refresh_token:%s", uuid)
-}
-
 // The GenerateToken method generates a random string with base64 with a static byte length
 // and stores it in the Redis store with provided expiration duration.
 func (t *authManager) GenerateRefreshToken(ctx context.Context, uuid string, payload *RefreshTokenPayload, expiresAt time.Duration) (string, error) {
-	var list []refreshTokenRaw
-	key := refreshTokenKey(uuid)
-
-	cmd := t.redisClient.Get(ctx, key)
-	if cmd.Err() != nil {
-		// This is first time user logs in and we need to
-		// create a refresh token list for user...
-		list = []refreshTokenRaw{}
-	}
-
-	err := json.Unmarshal([]byte(cmd.Val()), &list)
-	if err != nil {
-		list = []refreshTokenRaw{}
-	}
-
 	// Generate random string
 	refreshToken, err := generateRandomString(refreshTokenByteLength)
 	if err != nil {
 		return "", err
 	}
 
-	list = append(list, refreshTokenRaw{
-		RefreshToken: refreshToken,
-		Payload:      *payload,
-	})
-
-	jsonRaw, err := json.Marshal(list)
+	payloadJson, err := json.Marshal(payload)
 	if err != nil {
-		return "", err
+		return "", ErrEncodingPayload
 	}
 
-	err = t.redisClient.Set(ctx, key, jsonRaw, expiresAt).Err()
+	err = t.redisClient.HSet(ctx, generateHashKey(uuid), []string{
+		refreshToken, string(payloadJson),
+	}).Err()
 	if err != nil {
 		return "", err
 	}
@@ -68,80 +44,25 @@ func (t *authManager) GenerateRefreshToken(ctx context.Context, uuid string, pay
 }
 
 func (t *authManager) DecodeRefreshToken(ctx context.Context, uuid string, token string) (*RefreshTokenPayload, error) {
-	var list []refreshTokenRaw
-	key := refreshTokenKey(uuid)
-
-	cmd := t.redisClient.Get(ctx, key)
-	if cmd.Err() != nil {
-		// This is first time user logs in and we need to
-		// create a list for user...
-		list = []refreshTokenRaw{}
-	}
-
-	err := json.Unmarshal([]byte(cmd.Val()), &list)
+	payloadStr, err := t.redisClient.HGet(ctx, generateHashKey(uuid), token).Result()
 	if err != nil {
-		list = []refreshTokenRaw{}
-	}
-
-	var raw *refreshTokenRaw
-
-	for _, v := range list {
-		if strings.TrimSpace(v.RefreshToken) == strings.TrimSpace(token) {
-			raw = &v
-		}
-	}
-
-	if raw == nil {
 		return nil, ErrInvalidToken
 	}
 
-	return &raw.Payload, nil
+	var payload *RefreshTokenPayload
+
+	err = json.Unmarshal([]byte(payloadStr), &payload)
+	if err != nil {
+		return nil, ErrInvalidToken
+	}
+
+	return payload, nil
 }
 
 func (t *authManager) TerminateRefreshTokens(ctx context.Context, uuid string) error {
-	return t.DestroyToken(ctx, refreshTokenKey(uuid))
+	return t.redisClient.Del(ctx, generateHashKey(uuid)).Err()
 }
 
 func (t *authManager) RemoveRefreshToken(ctx context.Context, uuid string, token string) error {
-	var list []refreshTokenRaw
-	key := refreshTokenKey(uuid)
-
-	cmd := t.redisClient.Get(ctx, key)
-	if cmd.Err() != nil {
-		// This is first time user logs in and we need to
-		// create a refresh token list for user...
-		list = []refreshTokenRaw{}
-	}
-
-	err := json.Unmarshal([]byte(cmd.Val()), &list)
-	if err != nil {
-		list = []refreshTokenRaw{}
-	}
-
-	rawIndex := -1
-
-	for i, v := range list {
-		if strings.TrimSpace(v.RefreshToken) == strings.TrimSpace(token) {
-			rawIndex = i
-		}
-	}
-
-	if rawIndex == -1 {
-		return ErrInvalidToken
-	}
-
-	// Remove raw from list
-	list = append(list[:rawIndex], list[rawIndex+1:]...)
-
-	jsonRaw, err := json.Marshal(list)
-	if err != nil {
-		return err
-	}
-
-	err = t.redisClient.GetSet(ctx, key, jsonRaw).Err()
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return t.redisClient.HDel(ctx, generateHashKey(uuid), token).Err()
 }

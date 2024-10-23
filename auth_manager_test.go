@@ -42,11 +42,11 @@ func getRedisTestInstance(callback func(_redisClient *redis.Client)) {
 	}
 
 	// Kill the container
-	defer func() {
-		if err = pool.Purge(resource); err != nil {
-			log.Fatalf("Could not purge resource: %s", err)
-		}
-	}()
+	// defer func() {
+	// 	if err = pool.Purge(resource); err != nil {
+	// 		log.Fatalf("Could not purge resource: %s", err)
+	// 	}
+	// }()
 
 	err = pool.Retry(func() error {
 		ipAddr := resource.Container.NetworkSettings.IPAddress + ":6379"
@@ -101,12 +101,12 @@ func (s *AuthManagerTestSuite) Test_GenerateAndDecodeToken() {
 		CreatedAt: time.Now(),
 	}
 
-	token, err := s.authManager.GenerateToken(ctx, tokenType, payload, expiration)
+	token, err := s.authManager.GeneratePlainToken(ctx, tokenType, payload, expiration)
 	require.NoError(s.T(), err)
 	require.NotEmpty(s.T(), token)
 
 	// Decode
-	decoded, err := s.authManager.DecodeToken(ctx, token, tokenType)
+	decoded, err := s.authManager.DecodePlainToken(ctx, token, tokenType)
 	require.NoError(s.T(), err)
 	require.Equal(s.T(), decoded.UUID, payload.UUID)
 	require.Equal(s.T(), decoded.TokenType, payload.TokenType)

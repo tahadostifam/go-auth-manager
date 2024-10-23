@@ -59,6 +59,7 @@ func (t *authManager) DecodeAccessToken(ctx context.Context, token string) (*Acc
 	if err != nil || expr == nil {
 		return nil, ErrNoExpiration
 	}
+
 	now := time.Now()
 
 	if expr.Time.Before(now) {
