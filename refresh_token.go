@@ -19,7 +19,7 @@ type RefreshTokenPayload struct {
 	LoggedInAt time.Duration `json:"loggedInAt"`
 }
 
-// The GenerateToken method generates a random string with base64 with a static byte length
+// The GenerateRefreshToken method generates a random string with base64 with a static byte length
 // and stores it in the Redis store with provided expiration duration.
 func (t *authManager) GenerateRefreshToken(ctx context.Context, uuid string, payload *RefreshTokenPayload, expiresAt time.Duration) (string, error) {
 	// Generate random string
